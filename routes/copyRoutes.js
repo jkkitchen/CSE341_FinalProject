@@ -9,6 +9,7 @@ const {
 } = require('../controllers/copyController');
 const { copyValidationRules, validate } = require('../middleware/validate');
 const { isAuthenticated } = require("../middleware/authenticate");
+const { isAdmin } = require("../middleware/authorize");
 
 //GET route for all copies
 copyRouter.get('/',
@@ -24,6 +25,7 @@ copyRouter.get('/:id',
 copyRouter.post(
     '/',
     isAuthenticated,
+    isAdmin, //must have admin status to make changes
     copyValidationRules(),
     validate,
     createCopy);
@@ -56,11 +58,15 @@ copyRouter.put('/:id',
         }
     */
     isAuthenticated,
+    isAdmin, //must have admin status to make changes
     copyValidationRules(),
     validate,
     updateCopy);
 
 //DELETE route to delete a copy
-copyRouter.delete('/:id', isAuthenticated, deleteCopy);
+copyRouter.delete('/:id',
+    isAuthenticated,
+    isAdmin, //must have admin status to make changes
+    deleteCopy);
 
 module.exports = copyRouter;

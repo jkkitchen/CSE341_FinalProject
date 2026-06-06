@@ -9,6 +9,7 @@ const {
 } = require('../controllers/locationController');
 const { locationValidationRules, validate } = require('../middleware/validate');
 const { isAuthenticated } = require("../middleware/authenticate");
+const { isAdmin } = require("../middleware/authorize");
 
 //GET route for all locations
 locationRouter.get('/', getAllLocations);
@@ -20,6 +21,7 @@ locationRouter.get('/:id', getSingleLocation);
 locationRouter.post(
     '/',
     isAuthenticated,
+    isAdmin, //must have admin status to make changes
     locationValidationRules(),
     validate,
     createLocation);
@@ -38,11 +40,15 @@ locationRouter.put('/:id',
         }
     */
     isAuthenticated,
+    isAdmin, //must have admin status to make changes
     locationValidationRules(),
     validate,
     updateLocation);
 
 //DELETE route to delete a location entry
-locationRouter.delete('/:id', isAuthenticated, deleteLocation);
+locationRouter.delete('/:id',
+    isAuthenticated,
+    isAdmin, //must have admin status to make changes
+    deleteLocation);
 
 module.exports = locationRouter;

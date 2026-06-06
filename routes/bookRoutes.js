@@ -9,6 +9,7 @@ const {
 } = require('../controllers/bookController');
 const { bookValidationRules, validate } = require('../middleware/validate');
 const { isAuthenticated } = require("../middleware/authenticate");
+const { isAdmin } = require("../middleware/authorize");
 
 //GET route for all books
 bookRouter.get('/', getAllBooks);
@@ -20,6 +21,7 @@ bookRouter.get('/:id', getSingleBook);
 bookRouter.post(
     '/',
     isAuthenticated,
+    isAdmin, //must have admin status to make changes
     bookValidationRules(),
     validate,
     createBook);
@@ -39,11 +41,15 @@ bookRouter.put('/:id',
         }
     */
     isAuthenticated,
+    isAdmin, //must have admin status to make changes
     bookValidationRules(),
     validate,
     updateBook);
 
 //DELETE route to delete a book entry
-bookRouter.delete('/:id', isAuthenticated, deleteBook);
+bookRouter.delete('/:id',
+    isAuthenticated,
+    isAdmin, //must have admin status to make changes
+    deleteBook);
 
 module.exports = bookRouter;
