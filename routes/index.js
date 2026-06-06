@@ -2,19 +2,17 @@ const express = require("express");
 const router = express.Router();
 const passport = require('passport');
 
-// Only use routes that exist and work
+//Routes
 const bookRouter = require('./bookRoutes');
-
-// Comment out routes that have issues or are empty
-// const patronRouter = require('./patronRoutes');
-// const locationRouter = require('./locationRoutes');
-// const copyRouter = require('./copyRoutes');
+const patronRouter = require('./patronRoutes');
+const locationRouter = require('./locationRoutes');
+const copyRouter = require('./copyRoutes');
 
 // Routes for collections
 router.use('/book', bookRouter);
-// router.use('/patrons', patronRouter);
-// router.use('/locations', locationRouter);
-// router.use('/copies', copyRouter);
+router.use('/patrons', patronRouter);
+router.use('/locations', locationRouter);
+router.use('/copies', copyRouter);
 
 // Login Route
 router.get('/login',

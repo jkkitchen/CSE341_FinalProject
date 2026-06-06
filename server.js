@@ -45,21 +45,24 @@ passport.use(new GitHubStrategy({
 },
     async (accessToken, refreshToken, profile, done) => {
         try {
-            //Look for existing user
-            let user = await Patron.findOne({
-                provider: 'github',
-                providerId: profile.id
-            });
-
-            //Create if not found--this is where it's saved to MongoDB patron collection
-            if (!user) {
-                user = await Patron.create({
+            //Look for existing user and create entry if they don't exist--prevents duplicates in patron collection on MongoDB
+            const user = await Patron.findOneAndUpdate(
+                { //Search parameters
+                    provider: 'github',
+                    providerId: profile.id
+                },
+                { //Update entry with these values (should be the same most of the time)
                     provider: 'github',
                     providerId: profile.id,
                     username: profile.username,
-                    email: profile.emails?.[0]?.value || null //Github may not have email so use null if not available
-                })
-            }
+                    email: profile.emails?.[0]?.value || null //GitHub may not have email so store null if not found
+                },
+                { //
+                    new: true, //Return updated patron info
+                    upsert: true, //Creates new entry in patron collection if patron not found
+                    setDefaultsOnInsert: true //If a new patron if created, apply schema defaults
+                }
+            );
 
             //Return database user
             return done(null, user);
@@ -75,7 +78,7 @@ passport.serializeUser((user, done) => {
 });
 
 //Restore user on requests
-passport.deserializeUser(async (id, done) => {  // Add 'async' here
+passport.deserializeUser(async (id, done) => {  //deserializeUser is designed to accept a callback so Passport doesn't need it to be async to work as long as we call done() in this function.
     try {
         const user = await Patron.findById(id);
         done(null, user);
@@ -83,6 +86,7 @@ passport.deserializeUser(async (id, done) => {  // Add 'async' here
         done(err, null);
    }
 });
+
 app.get('/',
     /* #swagger.ignore = true */
     (req, res) => {
@@ -96,8 +100,7 @@ app.get('/github/callback',
     passport.authenticate('github', {
         failureRedirect: '/api-docs'
     }),
-    (req, res) => {
-        req.session.user = req.user;
+    (req, res) => {        
         res.redirect('/');
     }
 );

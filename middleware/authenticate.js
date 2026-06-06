@@ -1,4 +1,5 @@
 const isAuthenticated = (req, res, next) => {
+    //Use Passport to check if user is authenticated rather than Express-Sessions
     if (req.isAuthenticated()) {
         return next();
     }

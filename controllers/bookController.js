@@ -1,13 +1,18 @@
-const Book = require('../models/bookModel');
+const Book = require('../models/Book');
+const mongoose = require('mongoose');
 
 //Function to retrieve all book data
 const getAllBooks = async (req, res) => {
     try {
         //Use .find to find matching documents in the Mongo collection, to narrow it down you would enter a condition in the parentheses
-        const book = await Book.find();
+        const books = await Book.find();
+        console.log("DB NAME:", mongoose.connection.name);
+        console.log("BOOK COUNT:", books.length);
+        console.log("BOOKS:", books);
 
         //200 means successful and data will be converted to JSON file
-        res.status(200).json(book)
+        res.status(200).json(books)
+
     } catch (err) {
         //500 means server error
         res.status(500).json({ message: err.message });
@@ -20,6 +25,11 @@ const getSingleBook = async (req, res) => {
         //Return a single document from book where id matches the id from query parameter
         //Use findById function, it will pull the id from the route (params means values that are part of the URL path)
         const book = await Book.findById(req.params.id);
+        
+        //Make sure book exists
+        if (!book) {
+            return res.status(404).json({ message: 'Book data not found' });
+        }
 
         //200 means successful and data will be converted to JSON file
         res.status(200).json(book)
@@ -33,7 +43,7 @@ const getSingleBook = async (req, res) => {
 //Function to create book entry
 const createBook = async (req, res) => {
     try {
-        const newBook = Book({
+        const newBook = new Book({
             title: req.body.title,
             authorFirstName: req.body.authorFirstName,
             authorLastName: req.body.authorLastName
