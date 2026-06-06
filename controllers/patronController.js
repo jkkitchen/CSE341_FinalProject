@@ -14,7 +14,7 @@ const getAllPatrons = async (req, res) => {
     }
 };
 
-//Function to retrieve data for one location
+//Function to retrieve data for one patron
 const getSinglePatron = async (req, res) => {
     try {
         //Return a single document from patron where id matches the id from query parameter
@@ -45,7 +45,7 @@ const deletePatron = async (req, res) => {
         //Delete an existing patron entry using findByIdAndDelete function
         const deletedPatron = await Patron.findByIdAndDelete(req.params.id);
 
-        //Use an if statement to determine if location entry exists
+        //Use an if statement to determine if patron entry exists
         if (!deletedPatron) {
             return res.status(404).json({ message: 'Patron data not found' });
         };
