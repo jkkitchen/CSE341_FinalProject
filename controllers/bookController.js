@@ -1,14 +1,10 @@
 const Book = require('../models/Book');
-const mongoose = require('mongoose');
 
 //Function to retrieve all book data
 const getAllBooks = async (req, res) => {
     try {
         //Use .find to find matching documents in the Mongo collection, to narrow it down you would enter a condition in the parentheses
         const books = await Book.find();
-        console.log("DB NAME:", mongoose.connection.name);
-        console.log("BOOK COUNT:", books.length);
-        console.log("BOOKS:", books);
 
         //200 means successful and data will be converted to JSON file
         res.status(200).json(books)
