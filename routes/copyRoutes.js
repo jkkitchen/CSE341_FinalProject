@@ -38,22 +38,13 @@ copyRouter.put('/:id',
             description: 'Updated copy information',
             required: true,
             schema: {
-                bookID: {
-                    type: "string",
-                    description: "Book ID (Mongo ObjectId)"
-                },
-                locationID: {
-                    type: "string",
-                    ref: "Location ID (Mongo ObjectId)"
-                },
-                format: String,
-                publishingYear: Number,
-                ISBN: String,
-                checkedIn: Boolean,
-                patronID: {
-                    type: "string",
-                    description: "Patron ID (Mongo ObjectId)"
-                }
+                bookID: "",
+                locationID: "",
+                format: "",
+                publishingYear: "",
+                ISBN: "",
+                checkedIn: "",
+                patronID: ""
             }
         }
     */

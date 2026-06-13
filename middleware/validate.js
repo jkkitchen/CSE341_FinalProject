@@ -75,9 +75,25 @@ const copyValidationRules = () => {
             .isBoolean().toBoolean() //Converts True/False strings to real booleans            
             .withMessage('Check-in Status must be True or False.'),
         body('patronID')
-            .optional() //This value won't be necessary unless the book is checked out
+            .optional({nullable: true, checkFalsy: true }) //Skip if null, undefined, "", or false
             .isMongoId()
             .withMessage('Patron ID must be valid if book is checked out.'),
+        body().custom((value, { req }) => {
+            const checkedIn = req.body.checkedIn;
+            const patronID = req.body.patronID;
+
+            // If book is checked OUT (checkedIn === false), it SHOULD have a patronID
+            if (checkedIn === false && !patronID) {
+                throw new Error('Patron ID is required when book is checked out.');
+            }
+
+            // If book is checked IN, it should NOT have a patronID
+            if (checkedIn === true && patronID) {
+                throw new Error('Cannot have a patron ID when the book is checked in.');
+            }
+
+            return true;
+        })
     ]
 }
 
