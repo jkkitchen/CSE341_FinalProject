@@ -20,7 +20,9 @@
   },
   "homepage": "https://github.com/jkkitchen/CSE341_FinalProject#readme",
   "devDependencies": {
-    "nodemon": "^3.1.14"
+    "jest": "^30.4.2",
+    "nodemon": "^3.1.14",
+    "supertest": "^7.2.2"
   },
   "dependencies": {
     "cors": "^2.8.6",

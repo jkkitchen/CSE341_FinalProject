@@ -39,7 +39,7 @@ app
 passport.use(new GitHubStrategy({
     clientID: process.env.GITHUB_CLIENT_ID,
     clientSecret: process.env.GITHUB_CLIENT_SECRET,
-    callbackURL: process.env.CALLBACK_URL
+    callbackURL: process.env.GITHUB_CALLBACK_URL
 },
     async (accessToken, refreshToken, profile, done) => {
         try {
@@ -64,10 +64,6 @@ passport.use(new GitHubStrategy({
 ));
 
 // Google OAuth Strategy
-console.log('Loading Google Strategy...');
-console.log('Google Client ID exists:', !!process.env.GOOGLE_CLIENT_ID);
-console.log('Google Callback URL:', process.env.GOOGLE_CALLBACK_URL);
-
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
@@ -110,49 +106,6 @@ passport.deserializeUser(async (id, done) => {
         done(err, null);
    }
 });
-
-// Root route
-app.get('/', (req, res) => {
-    res.send(req.user
-        ? `Logged in as ${req.user.username || req.user.login}`
-        : "Logged Out");
-});
-
-// GitHub OAuth routes
-app.get('/auth/github',
-    passport.authenticate('github', { scope: ['user:email'] })
-);
-
-app.get('/auth/github/callback',
-    passport.authenticate('github', { failureRedirect: '/' }),
-    (req, res) => {
-        res.redirect('/');
-    }
-);
-
-// Google OAuth routes
-app.get('/auth/google',
-    passport.authenticate('google', { scope: ['profile', 'email'] })
-);
-
-app.get('/auth/google/callback',
-    passport.authenticate('google', { failureRedirect: '/' }),
-    (req, res) => {
-        res.redirect('/');
-    }
-);
-
-// Keep original routes for backward compatibility
-app.get('/login', (req, res) => {
-    res.redirect('/auth/github');
-});
-
-app.get('/github/callback',
-    passport.authenticate('github', { failureRedirect: '/' }),
-    (req, res) => {
-        res.redirect('/');
-    }
-);
 
 //ROUTES
 app.use('/', indexRouter);
