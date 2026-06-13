@@ -10,6 +10,7 @@ const copyRouter = require('./copyRoutes');
 
 // Root route
 router.get('/', (req, res) => {
+    /* #swagger.ignore = true */
     res.send(req.isAuthenticated()
         ? `Logged in as ${req.user.username || req.user.login}`
         : "Logged Out");
@@ -23,10 +24,12 @@ router.use('/copies', copyRouter);
 
 // GitHub Auth Route
 router.get('/auth/github',
+    /* #swagger.ignore = true */
     passport.authenticate('github', { scope: ['user:email'] })
 );
 
 router.get('/auth/github/callback',
+    /* #swagger.ignore = true */
     passport.authenticate('github', { failureRedirect: '/' }),
     (req, res) => {
         res.redirect('/api-docs');
@@ -35,10 +38,12 @@ router.get('/auth/github/callback',
 
 // Google Auth Route
 router.get('/auth/google',
+    /* #swagger.ignore = true */
     passport.authenticate('google', { scope: ['profile', 'email'] })
 );
 
 router.get('/auth/google/callback',
+    /* #swagger.ignore = true */
     passport.authenticate('google', { failureRedirect: '/' }),
     (req, res) => {
         res.redirect('/api-docs');
