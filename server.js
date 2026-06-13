@@ -123,10 +123,21 @@ app.use((err, req, res, next) => {
 const startServer = async () => {
     try {
         await connectDB();
-        app.listen(port, () => console.log(`Database listening and server running on port ${port}`));
+
+        const server = app.listen(port, () =>
+            console.log(`Database listening and server running on port ${port}`)
+        );
+
+        return server;
     } catch (err) {
         console.error(err);
     }
+};
+
+//Set up for testing--it can be imported into Jest without starting a second listener
+if (require.main === module) {
+    startServer();
 }
 
-startServer();
+//Export app for Jest
+module.exports = app;
